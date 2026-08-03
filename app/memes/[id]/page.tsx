@@ -36,30 +36,25 @@ const SingleMeme = () => {
         );
     }
 
-    const generateMeme = async () => {
-        setLoading(true);
-        try {
-            const params = new URLSearchParams();
-            params.append('template_id', id ?? '');
-            params.append('username', 'MuhammadIkram2');
-            params.append('password', '62zqWyFMj@8VzdA');
-
-            for (let i = 0; i < box_count; i++) {
-                params.append(`boxes[${i}][text]`, textInputs[i] || '');
-            }
-
-            const post = await fetch(`https://api.imgflip.com/caption_image?${params.toString()}`, {
-                method: 'POST',
-            });
-            const result = await post.json();
-            console.log(result);
-            setData(result);
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
+   const generateMeme = async () => {
+    setLoading(true);
+    try {
+        const response = await fetch('/api/generate-meme', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                template_id: id,
+                boxes: textInputs,
+            }),
+        });
+        const result = await response.json();
+        setData(result);
+    } catch (err) {
+        console.error(err);
+    } finally {
+        setLoading(false);
     }
+}
 
     return (
         <div className="flex flex-col justify-center">
